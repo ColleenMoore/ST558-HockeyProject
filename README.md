@@ -558,18 +558,20 @@ table, which was then used for futher analysis.
 
     ggplot(Standly_team_2005,aes(x= position.name, y= goals, fill= franchiseName)) + geom_boxplot() + labs(x= "Position Name", y= "Overall number of goals for each player", title= "Comparison of the 2006 Standley Cup Teams: Goals")
 
-![](Project-1--test_files/figure-gfm/unnamed-chunk-42-1.png)<!-- --> The
-centers and defenseman on the Carolina Hurricanes 2005-2006 team had a
-higher median number of goals compared to the Oilers. However the Oilers
-right wing players had a higher median number of goals compared to the
-right wings on the Hurricanes.
+![](Project-1--test_files/figure-gfm/unnamed-chunk-42-1.png)<!-- -->
+
+The centers and defenseman on the Carolina Hurricanes 2005-2006 team had
+a higher median number of goals compared to the Oilers. However the
+Oilers right wing players had a higher median number of goals compared
+to the right wings on the Hurricanes.
 
     ggplot(Standly_team_2005,aes(x= position.name, y= gamesPlayed, fill= franchiseName)) + geom_boxplot() + labs(x= "Position Name", y= "Overall number of games played", title= "Comparison of the 2006 Standley Cup Teams: Number of Games Played")
 
-![](Project-1--test_files/figure-gfm/unnamed-chunk-43-1.png)<!-- --> The
-Hurricanes had more experiences centers and defenseman compared to the
-Oilers. While the Oilers had more experienced right wing and left wing
-players.
+![](Project-1--test_files/figure-gfm/unnamed-chunk-43-1.png)<!-- -->
+
+The Hurricanes had more experiences centers and defenseman compared to
+the Oilers. While the Oilers had more experienced right wing and left
+wing players.
 
     ggplot(Standly_team_2005,aes(x= position.name, y= mostPenaltyMinutesOneSeason, fill= franchiseName)) + geom_boxplot() + labs(x= "Position Name", y= "Most Penalty Minutes in One Season", title= "Comparison of the 2006 Standley Cup Teams: Penalties")
 
