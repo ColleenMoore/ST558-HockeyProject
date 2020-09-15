@@ -113,8 +113,8 @@ team_data<- function(team){
 
 
 
-## `Goldie_data` function
-Accesses Goalie records for the specified team entering either the franchaise ID number or the common team name
+## `Goalie_data` function
+Accesses goalie records for the specified team entering either the franchaise ID number or the common team name
 The function appears to return statistic information on each individual goldie that played for a specific franchaise. It returns information such as: <br>
 
 * most goals saved in one game
@@ -190,7 +190,7 @@ Skater_data("Hurricanes")
 ```
 
 
-## Access the stats API 
+# Access the stats API 
 Write a function to access the [NHL stats API](https://gitlab.com/dword4/nhlapi/-/blob/master/stats-api.md)
 Be able to get information corresponding to:
 
@@ -341,7 +341,7 @@ stats_data(stat_api="mult_teams", team= 54, team2= 4, team3= 9, team4= 12)
 stats_data(stat_api="specific_stats", team = "Hurricanes", stat= "SingleSeasonPlayoffs")
 ```
 
-## Wrapper Function
+# Wrapper Function
 This function is able to call any of the functions above in this project. The function name as well as the arguments needed for the function have to be supplied. So for example if you wanted goalie data for the Carolina Hurricanes, you would have to enter: <br>
 NHL_master(func= "Goalie_data", team= "Hurricanes")
 
@@ -381,7 +381,7 @@ NHL_master(func= "stats_data", stat_api= "season", team= "Hurricanes", year1= 20
 # Data Exploration
 
 ## Is it true that teams tend to win more at home compared to on the road? 
-I don't know too much about hockey, or any sport for that matter, but I have always heard about the home court advantage. Let's see if this dataset suppoorts that. The NHL records api contains information about the number of wins and losses at home and away. This can be accessed through the `fran_team_totals` function. There are 2 games types listed for most of the teams type 2 and type 3. I do not know the difference and so I am going to limit this to type 2 games since thoes seem to be the predominat game type.
+I don't know too much about hockey, or any sport for that matter, but I have always heard about the home court advantage. Let's see if this dataset suppoorts that. The NHL records api contains information about the number of wins and losses at home and away. This can be accessed through the `fran_team_totals` function. There are 2 games types listed for most of the teams type 2 and type 3. Type 2 games are normal season games. I wil limit my analysis to type 2 games. 
 
 ```{r, message= F}
 
@@ -416,7 +416,7 @@ avg_pent
 The average percentage of wins is about 40% of games played and teams have, on average, 13.05 minutes in the pentalty box. 
 
 
-Since we know the aveage percentage of wins is about 40%, we can create a categorial variable for each team if they have greater than the average percentage of wins or less than the average percentage of wins. The same thing can be done for penatly minutes. This will allow us to create a contigency table
+Since we know the aveage percentage of wins is about 40%, we can create a categorial variable for each team if they have greater than the average percentage of wins or less than the average percentage of wins. The same thing can be done for penatly minutes. 
 
 ```{r, message= F}
 pentalty_wins$wins<- ifelse(pentalty_wins$perc_wins< avg_wins, "Below Avg Wins", "Above Avg Wins")

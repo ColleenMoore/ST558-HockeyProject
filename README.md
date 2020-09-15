@@ -8,10 +8,10 @@ Project 1- Hockey- Colleen Moore
     -   [`franchaise` function](#franchaise-function)
     -   [`fran_team_totals` function](#fran_team_totals-function)
     -   [`team_data` function](#team_data-function)
-    -   [`Goldie_data` function](#goldie_data-function)
+    -   [`Goalie_data` function](#goalie_data-function)
     -   [`Skater_data` function](#skater_data-function)
-    -   [Access the stats API](#access-the-stats-api)
-    -   [Wrapper Function](#wrapper-function)
+-   [Access the stats API](#access-the-stats-api)
+-   [Wrapper Function](#wrapper-function)
 -   [Data Exploration](#data-exploration)
     -   [Is it true that teams tend to win more at home compared to on
         the
@@ -126,10 +126,10 @@ information on a specific team such as:
       }
     }
 
-`Goldie_data` function
+`Goalie_data` function
 ----------------------
 
-Accesses Goalie records for the specified team entering either the
+Accesses goalie records for the specified team entering either the
 franchaise ID number or the common team name The function appears to
 return statistic information on each individual goldie that played for a
 specific franchaise. It returns information such as: <br>
@@ -202,7 +202,7 @@ information such as:
     }
 
 Access the stats API
---------------------
+====================
 
 Write a function to access the [NHL stats
 API](https://gitlab.com/dword4/nhlapi/-/blob/master/stats-api.md) Be
@@ -321,7 +321,7 @@ I tested each function above and each one seems to work fine.
     a<- stats_data(stat_api= "schedule", team= 54)
 
 Wrapper Function
-----------------
+================
 
 This function is able to call any of the functions above in this
 project. The function name as well as the arguments needed for the
@@ -364,9 +364,8 @@ have always heard about the home court advantage. Let’s see if this
 dataset suppoorts that. The NHL records api contains information about
 the number of wins and losses at home and away. This can be accessed
 through the `fran_team_totals` function. There are 2 games types listed
-for most of the teams type 2 and type 3. I do not know the difference
-and so I am going to limit this to type 2 games since thoes seem to be
-the predominat game type.
+for most of the teams type 2 and type 3. Type 2 games are normal season
+games. I wil limit my analysis to type 2 games.
 
     wins_losses<- fran_team_totals()%>% filter(gameTypeId == 2)%>% mutate(perc_wins= wins/gamesPlayed)
 
@@ -427,8 +426,7 @@ have, on average, 13.05 minutes in the pentalty box.
 Since we know the aveage percentage of wins is about 40%, we can create
 a categorial variable for each team if they have greater than the
 average percentage of wins or less than the average percentage of wins.
-The same thing can be done for penatly minutes. This will allow us to
-create a contigency table
+The same thing can be done for penatly minutes.
 
     pentalty_wins$wins<- ifelse(pentalty_wins$perc_wins< avg_wins, "Below Avg Wins", "Above Avg Wins")
     pentalty_wins$pent <- ifelse(pentalty_wins$pent_per_game < avg_pent, "Below Avg Pentalty Mins", "Above Avg Pentalty Mins")
