@@ -5,7 +5,7 @@ Project 1- Hockey- Colleen Moore
 -   [Required Packages](#required-packages)
 -   [Write Functions to contact the NHL records
     API](#write-functions-to-contact-the-nhl-records-api)
-    -   [`franchaise` function](#franchaise-function)
+    -   [`franchise` function](#franchise-function)
     -   [`fran_team_totals` function](#fran_team_totals-function)
     -   [`team_data` function](#team_data-function)
     -   [`Goalie_data` function](#goalie_data-function)
@@ -36,10 +36,11 @@ Project 1- Hockey- Colleen Moore
 Required Packages
 =================
 
-The required packages to run the functions in this project are
-`tidyverse`, `jsonlite`, and `httr`. The `jsonlite` and `httr` packages
-are used to access the api’s. `tidyverse` is used to more for data
-analysis.
+The required packages to run the functions in this project
+are`jsonlite`,`httr`, `tidyverse`, and `knitr` . The `jsonlite` and
+`httr` packages are used in accessing the api’s. `tidyverse` is used for
+data analysis and `knitr` is used for formatting. The tables returned
+from `kable`, a `knitr` function, are easier to read and print nicely.
 
 Write Functions to contact the [NHL records API](https://gitlab.com/dword4/nhlapi/-/blob/master/records-api.md)
 ===============================================================================================================
@@ -47,8 +48,8 @@ Write Functions to contact the [NHL records API](https://gitlab.com/dword4/nhlap
 The five functions below to acess various parts of the the NHL records
 api. Data is returned in a data frame format for ease of analysis.
 
-`franchaise` function
----------------------
+`franchise` function
+--------------------
 
 Returns the franchise information. The columns returned by this function
 include: <br>
@@ -63,7 +64,7 @@ include: <br>
 
 The information returned is in the format of a data table.
 
-    franchaise <- function(fran){
+    franchise <- function(fran){
       url<- "https://records.nhl.com/site/api/franchise"
       fran_get<- content(GET(url), "text")
       fran_json<- fromJSON(fran_get, flatten= T, simplifyDataFrame = T)
@@ -92,9 +93,9 @@ every franchise (ex roadTies, roadWins, etc)
 
 Accesses team specific season records by team number or by common team
 name. In order to be able to acces the team common name I had to refer
-to my previous function above, the franchaise function, that links up
-the team common name and the franchaise id. This function returns
-information on a specific team such as:
+to my previous function above, the franchise function, that links up the
+team common name and the franchise id. This function returns information
+on a specific team such as:
 
 -   Fewest losses
 -   Fewest wins
@@ -106,7 +107,7 @@ information on a specific team such as:
 
     team_data<- function(team){
       if(is.character(team)){
-        team_no<- franchaise() %>% select(id, teamCommonName)%>% filter(teamCommonName== team)%>% select(id)
+        team_no<- franchise() %>% select(id, teamCommonName)%>% filter(teamCommonName== team)%>% select(id)
         base_url<- "https://records.nhl.com/site/api/franchise-season-records?cayenneExp=franchiseId="
         url<- paste0(base_url,team_no)
         team_get<- content(GET(url), "text")
@@ -130,9 +131,9 @@ information on a specific team such as:
 ----------------------
 
 Accesses goalie records for the specified team entering either the
-franchaise ID number or the common team name The function appears to
-return statistic information on each individual goldie that played for a
-specific franchaise. It returns information such as: <br>
+franchise ID number or the common team name. The function appears to
+return statistic information on each individual goalie that played for a
+specific franchise. It returns information such as: <br>
 
 -   most goals saved in one game
 -   number of seasons played
@@ -143,7 +144,7 @@ specific franchaise. It returns information such as: <br>
 
     Goalie_data<- function(team){
       if(is.character(team)){
-       team_no<- franchaise() %>% select(id, teamCommonName)%>% filter(teamCommonName== team)%>% select(id)
+       team_no<- franchise() %>% select(id, teamCommonName)%>% filter(teamCommonName== team)%>% select(id)
         base_url<- "https://records.nhl.com/site/api/franchise-goalie-records?cayenneExp=franchiseId="
         url<- paste0(base_url, team_no)
         Gteam_get<- content(GET(url), "text")
@@ -167,7 +168,7 @@ specific franchaise. It returns information such as: <br>
 ----------------------
 
 Accesses skater records for the specified team entering either the
-franchaise ID number or the common team name. This function returns
+franchise ID number or the common team name. This function returns
 information such as:
 
 -   Players names
@@ -181,7 +182,7 @@ information such as:
 
     Skater_data<- function(team){
       if(is.character(team)){
-        team_no<- franchaise() %>% select(id, teamCommonName)%>% filter(teamCommonName== team)%>% select(id)
+        team_no<- franchise() %>% select(id, teamCommonName)%>% filter(teamCommonName== team)%>% select(id)
         base_url<- "https://records.nhl.com/site/api/franchise-skater-records?cayenneExp=franchiseId="
         url<- paste0(base_url, team_no)
         Steam_get<- content(GET(url), "text")
@@ -231,9 +232,9 @@ able to get information corresponding to:
 
 Notes: Have to enter the stat\_api in quotes… so stat\_api= “roster”
 
-Make a table with the ID, common team name, and franchaise ID to
+Make a table with the ID, common team name, and franchise ID to
 reference in functions. The stat API works on team number while the NHL
-records API works on franchaise numbers.
+records API works on franchise numbers.
 
     team_url<- "https://statsapi.web.nhl.com/api/v1/teams/"
     team_get<- content(GET(team_url), "text")
@@ -318,7 +319,28 @@ common name.
 
 I tested each function above and each one seems to work fine.
 
-    a<- stats_data(stat_api= "schedule", team= 54)
+    stats_data(stat_api= "less_roster", team= "Hurricanes")
+
+    ##                                                                                                                                                                            copyright
+    ## 1 NHL and the NHL Shield are registered trademarks of the National Hockey League. NHL and NHL team marks are the property of the NHL and its teams. © NHL 2020. All Rights Reserved.
+    ##   teams.id          teams.name       teams.link teams.abbreviation
+    ## 1       12 Carolina Hurricanes /api/v1/teams/12                CAR
+    ##   teams.teamName teams.locationName teams.firstYearOfPlay teams.shortName
+    ## 1     Hurricanes           Carolina                  1979        Carolina
+    ##                teams.officialSiteUrl teams.franchiseId teams.active
+    ## 1 http://www.carolinahurricanes.com/                26         TRUE
+    ##   teams.venue.id teams.venue.name    teams.venue.link teams.venue.city
+    ## 1           5066        PNC Arena /api/v1/venues/5066          Raleigh
+    ##   teams.venue.timeZone.id teams.venue.timeZone.offset teams.venue.timeZone.tz
+    ## 1        America/New_York                          -4                     EDT
+    ##   teams.division.id teams.division.name teams.division.nameShort
+    ## 1                18        Metropolitan                    Metro
+    ##    teams.division.link teams.division.abbreviation teams.conference.id
+    ## 1 /api/v1/divisions/18                           M                   6
+    ##   teams.conference.name teams.conference.link teams.franchise.franchiseId
+    ## 1               Eastern /api/v1/conferences/6                          26
+    ##   teams.franchise.teamName  teams.franchise.link
+    ## 1               Hurricanes /api/v1/franchises/26
 
 Wrapper Function
 ================
@@ -330,8 +352,8 @@ for the Carolina Hurricanes, you would have to enter: <br>
 NHL\_master(func= “Goalie\_data”, team= “Hurricanes”)
 
     NHL_master<- function(func, team, stat_api= NULL, year1=NULL, stat= NULL, team2= NULL, team3= NULL, team4= NULL, team5= NULL,.....){
-      if(func == "franchaise"){
-        return(franchaise(team))
+      if(func == "franchise"){
+        return(franchise(team))
       }
       if(func== "fran_team_totals"){
       return(fran_team_totals(team))
@@ -378,21 +400,21 @@ Normalize the number of wins and losses for each team by dividing the
 wins & losses by number of games played. Display the first 10 rows of
 the data frame.
 
-    perc_wins_losses<-wins_losses %>% mutate(perc_wins_home=homeWins/wins, perc_wins_road= roadWins/wins, perc_loss_home= homeLosses/losses, perc_loss_road= roadLosses/losses, perc_OT_loss_home=homeOvertimeLosses/overtimeLosses, perc_OT_loss_road= roadOvertimeLosses/overtimeLosses)%>% select(teamName, perc_wins_home,perc_wins_road, perc_loss_home, perc_loss_road, perc_OT_loss_home, perc_OT_loss_road)
+    perc_wins_losses<-wins_losses %>% mutate(perc_wins_home=homeWins/wins, perc_wins_road= roadWins/wins, perc_loss_home= homeLosses/losses, perc_loss_road= roadLosses/losses, perc_OT_loss_home=homeOvertimeLosses/overtimeLosses, perc_OT_loss_road= roadOvertimeLosses/overtimeLosses)%>% select(teamName, perc_wins_home,perc_wins_road, perc_loss_home, perc_loss_road, perc_OT_loss_home, perc_OT_loss_road) %>% arrange(desc(perc_wins_home))
     kable(head(perc_wins_losses, 10), digits=2)
 
-| teamName            | perc\_wins\_home | perc\_wins\_road | perc\_loss\_home | perc\_loss\_road | perc\_OT\_loss\_home | perc\_OT\_loss\_road |
-|:--------------------|-----------------:|-----------------:|-----------------:|-----------------:|---------------------:|---------------------:|
-| New Jersey Devils   |             0.57 |             0.43 |             0.43 |             0.57 |                 0.51 |                 0.49 |
-| New York Islanders  |             0.57 |             0.43 |             0.43 |             0.57 |                 0.51 |                 0.49 |
-| New York Rangers    |             0.56 |             0.44 |             0.42 |             0.58 |                 0.50 |                 0.50 |
-| Philadelphia Flyers |             0.59 |             0.41 |             0.40 |             0.60 |                 0.51 |                 0.49 |
-| Pittsburgh Penguins |             0.60 |             0.40 |             0.40 |             0.60 |                 0.39 |                 0.61 |
-| Boston Bruins       |             0.58 |             0.42 |             0.40 |             0.60 |                 0.48 |                 0.52 |
-| Buffalo Sabres      |             0.58 |             0.42 |             0.41 |             0.59 |                 0.50 |                 0.50 |
-| Montréal Canadiens  |             0.59 |             0.41 |             0.38 |             0.62 |                 0.55 |                 0.45 |
-| Ottawa Senators     |             0.55 |             0.45 |             0.44 |             0.56 |                 0.54 |                 0.46 |
-| Toronto Maple Leafs |             0.59 |             0.41 |             0.40 |             0.60 |                 0.49 |                 0.51 |
+| teamName                | perc\_wins\_home | perc\_wins\_road | perc\_loss\_home | perc\_loss\_road | perc\_OT\_loss\_home | perc\_OT\_loss\_road |
+|:------------------------|-----------------:|-----------------:|-----------------:|-----------------:|---------------------:|---------------------:|
+| Montreal Wanderers      |             1.00 |             0.00 |             0.40 |             0.60 |                   NA |                   NA |
+| Quebec Bulldogs         |             1.00 |             0.00 |             0.40 |             0.60 |                   NA |                   NA |
+| Toronto Arenas          |             0.83 |             0.17 |             0.23 |             0.77 |                   NA |                   NA |
+| Philadelphia Quakers    |             0.75 |             0.25 |             0.47 |             0.53 |                   NA |                   NA |
+| Kansas City Scouts      |             0.74 |             0.26 |             0.40 |             0.60 |                   NA |                   NA |
+| Detroit Falcons         |             0.74 |             0.26 |             0.24 |             0.76 |                   NA |                   NA |
+| California Golden Seals |             0.72 |             0.28 |             0.35 |             0.65 |                   NA |                   NA |
+| Hamilton Tigers         |             0.70 |             0.30 |             0.38 |             0.62 |                   NA |                   NA |
+| Colorado Rockies        |             0.69 |             0.31 |             0.41 |             0.59 |                   NA |                   NA |
+| Toronto St. Patricks    |             0.67 |             0.33 |             0.33 |             0.67 |                   NA |                   NA |
 
 From the table above it looks like more than half of the percent wins
 are at home. Calculate the mean home vs. road wins.

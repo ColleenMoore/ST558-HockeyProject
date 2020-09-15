@@ -11,21 +11,20 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 # Required Packages
-The required packages to run the functions in this project are `tidyverse`, `jsonlite`, and `httr`. 
-The `jsonlite` and `httr` packages are used to access the api's. `tidyverse` is used to more for data analysis. 
+The required packages to run the functions in this project are`jsonlite`,`httr`, `tidyverse`, and `knitr` . 
+The `jsonlite` and `httr` packages are used in accessing the api's. `tidyverse` is used for data analysis and `knitr` is used for formatting. The tables returned from `kable`, a `knitr` function, are easier to read and print nicely. 
 ```{r, include= FALSE, warning= FALSE}
 library(tidyverse)
 library(jsonlite)
 library(httr)
 library(knitr)
-library(DT)
 
 ```
 
 # Write Functions to contact the [NHL records API](https://gitlab.com/dword4/nhlapi/-/blob/master/records-api.md) 
 The five functions below to acess various parts of the the NHL records api. Data is returned in a data frame format for ease of analysis. 
 
-## `franchaise` function
+## `franchise` function
 Returns the franchise information.
 The columns returned by this function include: <br>
 
@@ -40,7 +39,7 @@ The columns returned by this function include: <br>
 The information returned is in the format of a data table. 
 
 ```{r, warning= F}
-franchaise <- function(fran){
+franchise <- function(fran){
   url<- "https://records.nhl.com/site/api/franchise"
   fran_get<- content(GET(url), "text")
   fran_json<- fromJSON(fran_get, flatten= T, simplifyDataFrame = T)
@@ -52,7 +51,7 @@ franchaise <- function(fran){
 ```
 
 ```{r, warning= F, message=F, include=F}
-franchaise()
+franchise()
 ```
 
 ## `fran_team_totals` function
@@ -77,7 +76,7 @@ fran_team_totals()
 
 ## `team_data` function
 Accesses team specific season records by team number or by common team name. 
-In order to be able to acces the team common name I had to refer to my previous function above, the franchaise function, that links up the team common name and the franchaise id.
+In order to be able to acces the team common name I had to refer to my previous function above, the franchise function, that links up the team common name and the franchise id.
 This function returns information on a specific team such as:
 
 * Fewest losses
@@ -90,7 +89,7 @@ This function returns information on a specific team such as:
 
 team_data<- function(team){
   if(is.character(team)){
-    team_no<- franchaise() %>% select(id, teamCommonName)%>% filter(teamCommonName== team)%>% select(id)
+    team_no<- franchise() %>% select(id, teamCommonName)%>% filter(teamCommonName== team)%>% select(id)
     base_url<- "https://records.nhl.com/site/api/franchise-season-records?cayenneExp=franchiseId="
     url<- paste0(base_url,team_no)
     team_get<- content(GET(url), "text")
@@ -114,8 +113,8 @@ team_data<- function(team){
 
 
 ## `Goalie_data` function
-Accesses goalie records for the specified team entering either the franchaise ID number or the common team name
-The function appears to return statistic information on each individual goldie that played for a specific franchaise. It returns information such as: <br>
+Accesses goalie records for the specified team entering either the franchise ID number or the common team name.
+The function appears to return statistic information on each individual goalie that played for a specific franchise. It returns information such as: <br>
 
 * most goals saved in one game
 * number of seasons played
@@ -127,7 +126,7 @@ The function appears to return statistic information on each individual goldie t
 ```{r}
 Goalie_data<- function(team){
   if(is.character(team)){
-   team_no<- franchaise() %>% select(id, teamCommonName)%>% filter(teamCommonName== team)%>% select(id)
+   team_no<- franchise() %>% select(id, teamCommonName)%>% filter(teamCommonName== team)%>% select(id)
     base_url<- "https://records.nhl.com/site/api/franchise-goalie-records?cayenneExp=franchiseId="
     url<- paste0(base_url, team_no)
     Gteam_get<- content(GET(url), "text")
@@ -149,8 +148,9 @@ Goalie_data<- function(team){
 ```
 
 
+
 ## `Skater_data` function
-Accesses skater records for the specified team entering either the franchaise ID number or the common team name. 
+Accesses skater records for the specified team entering either the franchise ID number or the common team name. 
 This function returns information such as:
 
 * Players names
@@ -164,7 +164,7 @@ This function returns information such as:
 ```{r}
 Skater_data<- function(team){
   if(is.character(team)){
-    team_no<- franchaise() %>% select(id, teamCommonName)%>% filter(teamCommonName== team)%>% select(id)
+    team_no<- franchise() %>% select(id, teamCommonName)%>% filter(teamCommonName== team)%>% select(id)
     base_url<- "https://records.nhl.com/site/api/franchise-skater-records?cayenneExp=franchiseId="
     url<- paste0(base_url, team_no)
     Steam_get<- content(GET(url), "text")
@@ -214,7 +214,7 @@ Be able to get information corresponding to:
 
 Notes: Have to enter the stat_api in quotes... so stat_api= "roster"
 
-Make a table with the ID, common team name, and franchaise ID to reference in functions. The stat API works on team number while the NHL records API works on franchaise numbers. 
+Make a table with the ID, common team name, and franchise ID to reference in functions. The stat API works on team number while the NHL records API works on franchise numbers. 
 ```{r, message= F}
 team_url<- "https://statsapi.web.nhl.com/api/v1/teams/"
 team_get<- content(GET(team_url), "text")
@@ -308,11 +308,11 @@ stats_data(stat_api = "roster", team= "Sabres")
 ```
 
 
-```{r, warning=F, message= F, include=F}
+```{r, warning=F, message= F, include=T}
 stats_data(stat_api= "less_roster", team= "Hurricanes")
 ```
 
-```{r, warning=F, message= F, inclucde=F}
+```{r, warning=F, message= F, include=F}
 a<- stats_data(stat_api= "schedule", team= 54)
 ```
 
@@ -347,8 +347,8 @@ NHL_master(func= "Goalie_data", team= "Hurricanes")
 
 ```{r, warning=F, message= F}
 NHL_master<- function(func, team, stat_api= NULL, year1=NULL, stat= NULL, team2= NULL, team3= NULL, team4= NULL, team5= NULL,.....){
-  if(func == "franchaise"){
-    return(franchaise(team))
+  if(func == "franchise"){
+    return(franchise(team))
   }
   if(func== "fran_team_totals"){
   return(fran_team_totals(team))
@@ -392,7 +392,7 @@ Looking at the wins_losess table, some teams have played more games than others.
 
 Normalize the number of wins and losses for each team by dividing the wins & losses by number of games played. Display the first 10 rows of the data frame. 
 ```{r, message=F}
-perc_wins_losses<-wins_losses %>% mutate(perc_wins_home=homeWins/wins, perc_wins_road= roadWins/wins, perc_loss_home= homeLosses/losses, perc_loss_road= roadLosses/losses, perc_OT_loss_home=homeOvertimeLosses/overtimeLosses, perc_OT_loss_road= roadOvertimeLosses/overtimeLosses)%>% select(teamName, perc_wins_home,perc_wins_road, perc_loss_home, perc_loss_road, perc_OT_loss_home, perc_OT_loss_road)
+perc_wins_losses<-wins_losses %>% mutate(perc_wins_home=homeWins/wins, perc_wins_road= roadWins/wins, perc_loss_home= homeLosses/losses, perc_loss_road= roadLosses/losses, perc_OT_loss_home=homeOvertimeLosses/overtimeLosses, perc_OT_loss_road= roadOvertimeLosses/overtimeLosses)%>% select(teamName, perc_wins_home,perc_wins_road, perc_loss_home, perc_loss_road, perc_OT_loss_home, perc_OT_loss_road) %>% arrange(desc(perc_wins_home))
 kable(head(perc_wins_losses, 10), digits=2)
 ```
 
