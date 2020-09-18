@@ -38,15 +38,18 @@ Required Packages
 
 The required packages to run the functions in this project
 are`jsonlite`,`httr`, `tidyverse`, and `knitr` . The `jsonlite` and
-`httr` packages are used in accessing the api’s. `tidyverse` is used for
-data analysis and `knitr` is used for formatting. The tables returned
-from `kable`, a `knitr` function, are easier to read and print nicely.
+`httr` packages are used in accessing the api’s. The `tidyverse` package
+is used for data analysis. I used mostly the `ggplot2` and `dpylr`
+package within `tidyverse` package. The `knitr` package is used for
+formatting. The tables returned from `kable`, a `knitr` function, are
+easier to read and print nicely.
 
 Write Functions to contact the [NHL records API](https://gitlab.com/dword4/nhlapi/-/blob/master/records-api.md)
 ===============================================================================================================
 
-The five functions below to acess various parts of the the NHL records
-api. Data is returned in a data frame format for ease of analysis.
+The five functions below are used to access various parts of the the NHL
+records api. Data is returned in a data frame format for ease of
+analysis.
 
 `franchise` function
 --------------------
@@ -76,7 +79,7 @@ The information returned is in the format of a data table.
 `fran_team_totals` function
 ---------------------------
 
-Accesses the franchise team totals This function returns Total stats for
+Accesses the franchise team totals This function returns total stats for
 every franchise (ex roadTies, roadWins, etc)
 
     fran_team_totals<- function(fran_team) {
@@ -319,29 +322,6 @@ common name.
 
 I tested each function above and each one seems to work fine.
 
-    stats_data(stat_api= "less_roster", team= "Hurricanes")
-
-    ##                                                                                                                                                                            copyright
-    ## 1 NHL and the NHL Shield are registered trademarks of the National Hockey League. NHL and NHL team marks are the property of the NHL and its teams. © NHL 2020. All Rights Reserved.
-    ##   teams.id          teams.name       teams.link teams.abbreviation
-    ## 1       12 Carolina Hurricanes /api/v1/teams/12                CAR
-    ##   teams.teamName teams.locationName teams.firstYearOfPlay teams.shortName
-    ## 1     Hurricanes           Carolina                  1979        Carolina
-    ##                teams.officialSiteUrl teams.franchiseId teams.active
-    ## 1 http://www.carolinahurricanes.com/                26         TRUE
-    ##   teams.venue.id teams.venue.name    teams.venue.link teams.venue.city
-    ## 1           5066        PNC Arena /api/v1/venues/5066          Raleigh
-    ##   teams.venue.timeZone.id teams.venue.timeZone.offset teams.venue.timeZone.tz
-    ## 1        America/New_York                          -4                     EDT
-    ##   teams.division.id teams.division.name teams.division.nameShort
-    ## 1                18        Metropolitan                    Metro
-    ##    teams.division.link teams.division.abbreviation teams.conference.id
-    ## 1 /api/v1/divisions/18                           M                   6
-    ##   teams.conference.name teams.conference.link teams.franchise.franchiseId
-    ## 1               Eastern /api/v1/conferences/6                          26
-    ##   teams.franchise.teamName  teams.franchise.link
-    ## 1               Hurricanes /api/v1/franchises/26
-
 Wrapper Function
 ================
 
@@ -390,6 +370,15 @@ for most of the teams type 2 and type 3. Type 2 games are normal season
 games. I wil limit my analysis to type 2 games.
 
     wins_losses<- fran_team_totals()%>% filter(gameTypeId == 2)%>% mutate(perc_wins= wins/gamesPlayed)
+    kable(head(wins_losses, 5))
+
+|  id | activeFranchise | firstSeasonId | franchiseId | gameTypeId | gamesPlayed | goalsAgainst | goalsFor | homeLosses | homeOvertimeLosses | homeTies | homeWins | lastSeasonId | losses | overtimeLosses | penaltyMinutes | pointPctg | points | roadLosses | roadOvertimeLosses | roadTies | roadWins | shootoutLosses | shootoutWins | shutouts | teamId | teamName            | ties | triCode | wins | total | perc\_wins |
+|----:|----------------:|--------------:|------------:|-----------:|------------:|-------------:|---------:|-----------:|-------------------:|---------:|---------:|-------------:|-------:|---------------:|---------------:|----------:|-------:|-----------:|-------------------:|---------:|---------:|---------------:|-------------:|---------:|-------:|:--------------------|-----:|:--------|-----:|------:|-----------:|
+|   1 |               1 |      19821983 |          23 |          2 |        2937 |         8708 |     8647 |        507 |                 82 |       96 |      783 |           NA |   1181 |            162 |          44397 |    0.5330 |   3131 |        674 |                 80 |      123 |      592 |             79 |           78 |      193 |      1 | New Jersey Devils   |  219 | NJD     | 1375 |   105 |  0.4681648 |
+|   3 |               1 |      19721973 |          22 |          2 |        3732 |        11779 |    11889 |        674 |                 81 |      170 |      942 |           NA |   1570 |            159 |          57422 |    0.5115 |   3818 |        896 |                 78 |      177 |      714 |             67 |           82 |      167 |      2 | New York Islanders  |  347 | NYI     | 1656 |   105 |  0.4437299 |
+|   5 |               1 |      19261927 |          10 |          2 |        6504 |        19863 |    19864 |       1132 |                 73 |      448 |     1600 |           NA |   2693 |            147 |          85564 |    0.5125 |   6667 |       1561 |                 74 |      360 |     1256 |             66 |           78 |      403 |      3 | New York Rangers    |  808 | NYR     | 2856 |   105 |  0.4391144 |
+|   8 |               1 |      19671968 |          16 |          2 |        4115 |        12054 |    13527 |        572 |                 89 |      193 |     1204 |           NA |   1429 |            175 |          75761 |    0.5759 |   4740 |        857 |                 86 |      264 |      850 |             88 |           50 |      245 |      4 | Philadelphia Flyers |  457 | PHI     | 2054 |   105 |  0.4991495 |
+|   9 |               1 |      19671968 |          17 |          2 |        4115 |        13893 |    13678 |        679 |                 58 |      205 |     1116 |           NA |   1718 |            148 |          65826 |    0.5180 |   4263 |       1039 |                 90 |      178 |      750 |             53 |           80 |      184 |      5 | Pittsburgh Penguins |  383 | PIT     | 1866 |   105 |  0.4534629 |
 
 Looking at the wins\_losess table, some teams have played more games
 than others. I assume this table has information since the team was
@@ -400,30 +389,33 @@ Normalize the number of wins and losses for each team by dividing the
 wins & losses by number of games played. Display the first 10 rows of
 the data frame.
 
-    perc_wins_losses<-wins_losses %>% mutate(perc_wins_home=homeWins/wins, perc_wins_road= roadWins/wins, perc_loss_home= homeLosses/losses, perc_loss_road= roadLosses/losses, perc_OT_loss_home=homeOvertimeLosses/overtimeLosses, perc_OT_loss_road= roadOvertimeLosses/overtimeLosses)%>% select(teamName, perc_wins_home,perc_wins_road, perc_loss_home, perc_loss_road, perc_OT_loss_home, perc_OT_loss_road) %>% arrange(desc(perc_wins_home))
+    perc_wins_losses<-wins_losses %>% mutate(perc_wins_home=homeWins/wins, perc_wins_road= roadWins/wins, perc_loss_home= homeLosses/losses, perc_loss_road= roadLosses/losses )%>% select(teamName, perc_wins_home,perc_wins_road, perc_loss_home, perc_loss_road) %>% arrange(desc(perc_wins_home))
     kable(head(perc_wins_losses, 10), digits=2)
 
-| teamName                | perc\_wins\_home | perc\_wins\_road | perc\_loss\_home | perc\_loss\_road | perc\_OT\_loss\_home | perc\_OT\_loss\_road |
-|:------------------------|-----------------:|-----------------:|-----------------:|-----------------:|---------------------:|---------------------:|
-| Montreal Wanderers      |             1.00 |             0.00 |             0.40 |             0.60 |                   NA |                   NA |
-| Quebec Bulldogs         |             1.00 |             0.00 |             0.40 |             0.60 |                   NA |                   NA |
-| Toronto Arenas          |             0.83 |             0.17 |             0.23 |             0.77 |                   NA |                   NA |
-| Philadelphia Quakers    |             0.75 |             0.25 |             0.47 |             0.53 |                   NA |                   NA |
-| Kansas City Scouts      |             0.74 |             0.26 |             0.40 |             0.60 |                   NA |                   NA |
-| Detroit Falcons         |             0.74 |             0.26 |             0.24 |             0.76 |                   NA |                   NA |
-| California Golden Seals |             0.72 |             0.28 |             0.35 |             0.65 |                   NA |                   NA |
-| Hamilton Tigers         |             0.70 |             0.30 |             0.38 |             0.62 |                   NA |                   NA |
-| Colorado Rockies        |             0.69 |             0.31 |             0.41 |             0.59 |                   NA |                   NA |
-| Toronto St. Patricks    |             0.67 |             0.33 |             0.33 |             0.67 |                   NA |                   NA |
+| teamName                | perc\_wins\_home | perc\_wins\_road | perc\_loss\_home | perc\_loss\_road |
+|:------------------------|-----------------:|-----------------:|-----------------:|-----------------:|
+| Montreal Wanderers      |             1.00 |             0.00 |             0.40 |             0.60 |
+| Quebec Bulldogs         |             1.00 |             0.00 |             0.40 |             0.60 |
+| Toronto Arenas          |             0.83 |             0.17 |             0.23 |             0.77 |
+| Philadelphia Quakers    |             0.75 |             0.25 |             0.47 |             0.53 |
+| Kansas City Scouts      |             0.74 |             0.26 |             0.40 |             0.60 |
+| Detroit Falcons         |             0.74 |             0.26 |             0.24 |             0.76 |
+| California Golden Seals |             0.72 |             0.28 |             0.35 |             0.65 |
+| Hamilton Tigers         |             0.70 |             0.30 |             0.38 |             0.62 |
+| Colorado Rockies        |             0.69 |             0.31 |             0.41 |             0.59 |
+| Toronto St. Patricks    |             0.67 |             0.33 |             0.33 |             0.67 |
 
 From the table above it looks like more than half of the percent wins
 are at home. Calculate the mean home vs. road wins.
 
     a<- perc_wins_losses %>% summarize(meanWinsHome= mean(perc_wins_home), meanWinsRoad= mean(perc_wins_road), meanLossHome= mean(perc_loss_home), meanLossRoad= mean(perc_loss_road))
-    a
+    kable(a, caption= "Do teams win more at home?")
 
-    ##   meanWinsHome meanWinsRoad meanLossHome meanLossRoad
-    ## 1    0.6158957    0.3841043    0.4115916    0.5884084
+| meanWinsHome | meanWinsRoad | meanLossHome | meanLossRoad |
+|-------------:|-------------:|-------------:|-------------:|
+|    0.6158957 |    0.3841043 |    0.4115916 |    0.5884084 |
+
+Do teams win more at home?
 
 This tables show that teams tend to win more at home compared to on the
 road.
@@ -462,7 +454,7 @@ The same thing can be done for penatly minutes.
 
 Average wins vs. Average Pentalty Mins
 
-From the contigency table above it looks teams with above averge
+From the contigency table above, it looks like teams with above averge
 pentalty minutes tend to win more games compared to teams with below
 average pentalty minutes.
 
@@ -492,6 +484,7 @@ Histogram of \# of seasons for each player type
     ggplot(hist_player, aes(seasons))+ geom_histogram(fill= "blue")+ labs(title= "Number of Seasons a player plays for the Carolina Hurricanes", x= "Number of Seasons Played" )
 
 ![](Project-1--test_files/figure-gfm/unnamed-chunk-30-1.png)<!-- -->
+
 This histogram shows that most players only play on the Carolina
 Hurricanes for less than 4 seasons.
 
@@ -560,9 +553,9 @@ Comparison of the Carolina Hurricanes and the Edmonton Oilers
 In 2006 the Carolina Hurricanes won the Stanley Cup against the Edmonton
 Oilers. Let’s explore these two teams.
 
-    standly_team_names<- NHL_master(func= "stats_data", stat_api= "season", team= "Hurricanes", year1= 2005)%>%select(person.id, person.fullName, position.name)
+    stanly_team_names<- NHL_master(func= "stats_data", stat_api= "season", team= "Hurricanes", year1= 2005)%>%select(person.id, person.fullName, position.name)
 
-    Cup_Hurricanes_data<- standly_team_names %>% inner_join(Skater_data("Hurricanes"), by= c("person.id"= "playerId"))
+    Cup_Hurricanes_data<- stanly_team_names %>% inner_join(Skater_data("Hurricanes"), by= c("person.id"= "playerId"))
 
     Oilers_names<- NHL_master(func= "stats_data", stat_api= "season", team= "Oilers", year1= 2005)%>% select(person.id, person.fullName, position.name) 
 
@@ -571,12 +564,12 @@ Oilers. Let’s explore these two teams.
 The players that were on the Hurricanes and Oilers team during the 2005-
 2006 season was obtained using the `NHL_master` function. These tables
 were then used to get player specific information from the `Skater_data`
-function. These two tables were combined to form the Standly\_team\_2005
+function. These two tables were combined to form the stanly\_team\_2005
 table, which was then used for futher analysis.
 
-    Standly_team_2005<- rbind(Cup_Hurricanes_data, Oilers_data)
+    Stanly_team_2005<- rbind(Cup_Hurricanes_data, Oilers_data)
 
-    ggplot(Standly_team_2005,aes(x= position.name, y= goals, fill= franchiseName)) + geom_boxplot() + labs(x= "Position Name", y= "Overall number of goals for each player", title= "Comparison of the 2006 Standley Cup Teams: Goals")
+    ggplot(Stanly_team_2005,aes(x= position.name, y= goals, fill= franchiseName)) + geom_boxplot() + labs(x= "Position Name", y= "Overall number of goals for each player", title= "Comparison of the 2006 Stanley Cup Teams: Goals")
 
 ![](Project-1--test_files/figure-gfm/unnamed-chunk-42-1.png)<!-- -->
 
@@ -585,7 +578,7 @@ a higher median number of goals compared to the Oilers. However the
 Oilers right wing players had a higher median number of goals compared
 to the right wings on the Hurricanes.
 
-    ggplot(Standly_team_2005,aes(x= position.name, y= gamesPlayed, fill= franchiseName)) + geom_boxplot() + labs(x= "Position Name", y= "Overall number of games played", title= "Comparison of the 2006 Standley Cup Teams: Number of Games Played")
+    ggplot(Stanly_team_2005,aes(x= position.name, y= gamesPlayed, fill= franchiseName)) + geom_boxplot() + labs(x= "Position Name", y= "Overall number of games played", title= "Comparison of the 2006 Stanley Cup Teams: Number of Games Played")
 
 ![](Project-1--test_files/figure-gfm/unnamed-chunk-43-1.png)<!-- -->
 
@@ -593,7 +586,7 @@ The Hurricanes had more experiences centers and defenseman compared to
 the Oilers. While the Oilers had more experienced right wing and left
 wing players.
 
-    ggplot(Standly_team_2005,aes(x= position.name, y= mostPenaltyMinutesOneSeason, fill= franchiseName)) + geom_boxplot() + labs(x= "Position Name", y= "Most Penalty Minutes in One Season", title= "Comparison of the 2006 Standley Cup Teams: Penalties")
+    ggplot(Stanly_team_2005,aes(x= position.name, y= mostPenaltyMinutesOneSeason, fill= franchiseName)) + geom_boxplot() + labs(x= "Position Name", y= "Most Penalty Minutes in One Season", title= "Comparison of the 2006 Stanley Cup Teams: Penalties")
 
 ![](Project-1--test_files/figure-gfm/unnamed-chunk-44-1.png)<!-- -->
 

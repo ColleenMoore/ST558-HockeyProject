@@ -2,8 +2,6 @@
 title: "Project 1- Hockey- Colleen Moore"
 date: "9/14/2020"
 output:
-  html_document:
-    toc: TRUE
   rmarkdown::github_document:
     toc: TRUE
     toc_depth: 3
@@ -14,7 +12,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 # Required Packages
 The required packages to run the functions in this project are`jsonlite`,`httr`, `tidyverse`, and `knitr` . 
-The `jsonlite` and `httr` packages are used in accessing the api's. `tidyverse` is used for data analysis and `knitr` is used for formatting. The tables returned from `kable`, a `knitr` function, are easier to read and print nicely. 
+The `jsonlite` and `httr` packages are used in accessing the api's. The `tidyverse` package is used for data analysis. I used mostly the `ggplot2` and `dpylr` package within `tidyverse` package. The `knitr` package is used for formatting. The tables returned from `kable`, a `knitr` function, are easier to read and print nicely. 
 ```{r, include= FALSE, warning= FALSE}
 library(tidyverse)
 library(jsonlite)
@@ -24,7 +22,7 @@ library(knitr)
 ```
 
 # Write Functions to contact the [NHL records API](https://gitlab.com/dword4/nhlapi/-/blob/master/records-api.md) 
-The five functions below to acess various parts of the the NHL records api. Data is returned in a data frame format for ease of analysis. 
+The five functions below are used to access various parts of the the NHL records api. Data is returned in a data frame format for ease of analysis. 
 
 ## `franchise` function
 Returns the franchise information.
@@ -58,7 +56,7 @@ franchise()
 
 ## `fran_team_totals` function
 Accesses the franchise team totals
-This function returns Total stats for every franchise (ex roadTies, roadWins, etc)
+This function returns total stats for every franchise (ex roadTies, roadWins, etc)
 
 ```{r, warning= F, message= F}
 fran_team_totals<- function(fran_team) {
@@ -310,7 +308,7 @@ stats_data(stat_api = "roster", team= "Sabres")
 ```
 
 
-```{r, warning=F, message= F, include=T}
+```{r, warning=F, message= F, include=F}
 stats_data(stat_api= "less_roster", team= "Hurricanes")
 ```
 
@@ -388,20 +386,21 @@ I don't know too much about hockey, or any sport for that matter, but I have alw
 ```{r, message= F}
 
 wins_losses<- fran_team_totals()%>% filter(gameTypeId == 2)%>% mutate(perc_wins= wins/gamesPlayed)
+kable(head(wins_losses, 5))
 
 ```
 Looking at the wins_losess table, some teams have played more games than others. I assume this table has information since the team was formed and some teams have existed longer than others and thus have played more games. 
 
 Normalize the number of wins and losses for each team by dividing the wins & losses by number of games played. Display the first 10 rows of the data frame. 
 ```{r, message=F}
-perc_wins_losses<-wins_losses %>% mutate(perc_wins_home=homeWins/wins, perc_wins_road= roadWins/wins, perc_loss_home= homeLosses/losses, perc_loss_road= roadLosses/losses, perc_OT_loss_home=homeOvertimeLosses/overtimeLosses, perc_OT_loss_road= roadOvertimeLosses/overtimeLosses)%>% select(teamName, perc_wins_home,perc_wins_road, perc_loss_home, perc_loss_road, perc_OT_loss_home, perc_OT_loss_road) %>% arrange(desc(perc_wins_home))
+perc_wins_losses<-wins_losses %>% mutate(perc_wins_home=homeWins/wins, perc_wins_road= roadWins/wins, perc_loss_home= homeLosses/losses, perc_loss_road= roadLosses/losses )%>% select(teamName, perc_wins_home,perc_wins_road, perc_loss_home, perc_loss_road) %>% arrange(desc(perc_wins_home))
 kable(head(perc_wins_losses, 10), digits=2)
 ```
 
 From the table above it looks like more than half of the percent wins are at home. Calculate the mean home vs. road wins. 
 ```{r}
 a<- perc_wins_losses %>% summarize(meanWinsHome= mean(perc_wins_home), meanWinsRoad= mean(perc_wins_road), meanLossHome= mean(perc_loss_home), meanLossRoad= mean(perc_loss_road))
-a
+kable(a, caption= "Do teams win more at home?")
 ```
 This tables show that teams tend to win more at home compared to on the road. 
 
@@ -429,7 +428,7 @@ pentalty_wins$pent <- ifelse(pentalty_wins$pent_per_game < avg_pent, "Below Avg 
 kable(table(pentalty_wins$wins, pentalty_wins$pent), caption= "Average wins vs. Average Pentalty Mins")
 ```
 
-From the contigency table above it looks teams with above averge pentalty minutes tend to win more games compared to teams with below average pentalty minutes. 
+From the contigency table above, it looks like teams with above averge pentalty minutes tend to win more games compared to teams with below average pentalty minutes. 
 
 ## How many seasons do the Carolina Hurricanes keep their players?
 ```{r, message=F}
@@ -444,6 +443,7 @@ Histogram of # of seasons for each player type
 hist_player<- Skater_data("Hurricanes")
 ggplot(hist_player, aes(seasons))+ geom_histogram(fill= "blue")+ labs(title= "Number of Seasons a player plays for the Carolina Hurricanes", x= "Number of Seasons Played" )
 ```
+
 This histogram shows that most players only play on the Carolina Hurricanes for less than 4 seasons. 
 
 ## What positions spend the most time in the penalty box for the Caroliana Hurricanes? 
@@ -498,11 +498,11 @@ While each players record number of goals and assists may not be in the same sea
 In 2006 the Carolina Hurricanes won the Stanley Cup against the Edmonton Oilers. 
 Let's explore these two teams. 
 ```{r}
-standly_team_names<- NHL_master(func= "stats_data", stat_api= "season", team= "Hurricanes", year1= 2005)%>%select(person.id, person.fullName, position.name)
+stanly_team_names<- NHL_master(func= "stats_data", stat_api= "season", team= "Hurricanes", year1= 2005)%>%select(person.id, person.fullName, position.name)
 ```
 
 ```{r, message= F}
-Cup_Hurricanes_data<- standly_team_names %>% inner_join(Skater_data("Hurricanes"), by= c("person.id"= "playerId"))
+Cup_Hurricanes_data<- stanly_team_names %>% inner_join(Skater_data("Hurricanes"), by= c("person.id"= "playerId"))
 ```
 
 ```{r, message=F}
@@ -514,28 +514,28 @@ Oilers_data<- Oilers_names %>% inner_join(Skater_data("Oilers"), by= c("person.i
 
 ```
 
-The players that were on the Hurricanes and Oilers team during the 2005- 2006 season was obtained using the `NHL_master` function. These tables were then used to get player specific information from the `Skater_data` function. These two tables were combined to form the Standly_team_2005 table, which was then used for futher analysis. 
+The players that were on the Hurricanes and Oilers team during the 2005- 2006 season was obtained using the `NHL_master` function. These tables were then used to get player specific information from the `Skater_data` function. These two tables were combined to form the stanly_team_2005 table, which was then used for futher analysis. 
 
 
 ```{r, message=F}
-Standly_team_2005<- rbind(Cup_Hurricanes_data, Oilers_data)
+Stanly_team_2005<- rbind(Cup_Hurricanes_data, Oilers_data)
 ```
 
 ```{r}
-ggplot(Standly_team_2005,aes(x= position.name, y= goals, fill= franchiseName)) + geom_boxplot() + labs(x= "Position Name", y= "Overall number of goals for each player", title= "Comparison of the 2006 Standley Cup Teams: Goals")
+ggplot(Stanly_team_2005,aes(x= position.name, y= goals, fill= franchiseName)) + geom_boxplot() + labs(x= "Position Name", y= "Overall number of goals for each player", title= "Comparison of the 2006 Stanley Cup Teams: Goals")
 ```
 
 
 The centers and defenseman on the Carolina Hurricanes 2005-2006 team had a higher median number of goals compared to the Oilers. However the Oilers right wing players had a higher median number of goals compared to the right wings on the Hurricanes.  
 
 ```{r}
-ggplot(Standly_team_2005,aes(x= position.name, y= gamesPlayed, fill= franchiseName)) + geom_boxplot() + labs(x= "Position Name", y= "Overall number of games played", title= "Comparison of the 2006 Standley Cup Teams: Number of Games Played")
+ggplot(Stanly_team_2005,aes(x= position.name, y= gamesPlayed, fill= franchiseName)) + geom_boxplot() + labs(x= "Position Name", y= "Overall number of games played", title= "Comparison of the 2006 Stanley Cup Teams: Number of Games Played")
 ```
 
 The Hurricanes had more experiences centers and defenseman compared to the Oilers. While the Oilers had more experienced right wing and left wing players. 
 
 ```{r}
-ggplot(Standly_team_2005,aes(x= position.name, y= mostPenaltyMinutesOneSeason, fill= franchiseName)) + geom_boxplot() + labs(x= "Position Name", y= "Most Penalty Minutes in One Season", title= "Comparison of the 2006 Standley Cup Teams: Penalties")
+ggplot(Stanly_team_2005,aes(x= position.name, y= mostPenaltyMinutesOneSeason, fill= franchiseName)) + geom_boxplot() + labs(x= "Position Name", y= "Most Penalty Minutes in One Season", title= "Comparison of the 2006 Stanley Cup Teams: Penalties")
 ```
 
 The thing that stands out to me in this boxplot is that the left wing players on the Oilers had a much higher median of penalty minutes in one season. 
