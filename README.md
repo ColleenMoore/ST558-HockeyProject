@@ -320,7 +320,7 @@ common name.
       }
     }
 
-I tested each function above and each one seems to work fine.
+I tested each of the functions above and each one seems to work fine.
 
 Wrapper Function
 ================

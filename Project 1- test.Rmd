@@ -301,7 +301,7 @@ stats_data<- function(team, stat_api, year1=NULL, stat= NULL, team2= NULL, team3
 
 ```
 
-I tested each function above and each one seems to work fine. 
+I tested each of the functions above and each one seems to work fine. 
 
 ```{r, warning=F, include=F}
 stats_data(stat_api = "roster", team= "Sabres")
