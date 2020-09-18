@@ -5,6 +5,8 @@ output:
   rmarkdown::github_document:
     toc: TRUE
     toc_depth: 3
+  html_document:
+    toc:TRUE
 ---
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
