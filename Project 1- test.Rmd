@@ -1,12 +1,14 @@
 ---
 title: "Project 1- Hockey- Colleen Moore"
-date: "9/18/2020"
 output:
-  github_document:
-    toc: TRUE
-    toc_depth: 3
   html_document:
-    toc:TRUE
+    df_print: paged
+    toc: yes
+    toc_depth: '3'
+  github_document:
+    toc: yes
+    toc_depth: 3
+date: "9/18/2020"
 ---
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
